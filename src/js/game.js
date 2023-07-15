@@ -54,8 +54,48 @@ class Gameboard {
   }
 
   receiveAttack(r, c) {
+    if (!(r >= 0 && r < this.board.length && c >= 0 && c < this.board.length))
+      return "No such position";
     if (this.board[r][c] === "Free") this.board[r][c] = "Missed";
+    else {
+      const ship = this.ships[this.board[r][c]];
+      ship.hit();
+    }
+  }
+
+  allShipsSunk() {
+    for (let ship of Object.values(this.ships)) {
+      if (ship.length > ship.hits) return false;
+    }
+    return true;
   }
 }
 
-export { Gameboard, Ship };
+class Player {
+  constructor(name, ai = false) {
+    this.name = name;
+    this.ai = ai;
+    if (ai) {
+      this.available = [];
+      for (let r = 0; r < 10; r++) {
+        for (let c = 0; c < 10; c++) {
+          this.available.push([r, c]);
+        }
+      }
+    }
+  }
+
+  makeMove(enemyGameBoard, pos) {
+    if (!this.ai) enemyGameBoard.receiveAttack(pos[0], pos[1]);
+    else {
+      const index = Math.floor(Math.random() * this.available.length);
+      enemyGameBoard.receiveAttack(
+        this.available[index][0],
+        this.available[index][1]
+      );
+      this.available.splice(index, 1);
+    }
+  }
+}
+
+export { Gameboard, Ship, Player };

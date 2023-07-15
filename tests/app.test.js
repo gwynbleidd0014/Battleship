@@ -1,4 +1,4 @@
-import { Gameboard, Ship } from "../src/js/game";
+import { Gameboard, Ship, Player } from "../src/js/game";
 
 describe("Board", () => {
   test("Places ship on board", () => {
@@ -20,8 +20,24 @@ describe("Board", () => {
 
   test("Recieves attack correctly", () => {
     const gameBoard = new Gameboard();
+    const ship = new Ship("Submarine", 3);
+    const result = { ...ship };
+    result.hits = 1;
+    gameBoard.placeShip([0, 0], true, ship);
+    gameBoard.receiveAttack(2, 2);
     gameBoard.receiveAttack(0, 0);
-    expect(gameBoard.board[0][0]).toBe("Missed");
+    expect(gameBoard.board[2][2]).toBe("Missed");
+    expect(ship).toEqual(result);
+  });
+
+  test("All ships sunk", () => {
+    const gameBoard = new Gameboard();
+    gameBoard.placeShip([0, 0], true, new Ship("Submarine", 1));
+    gameBoard.placeShip([2, 0], true, new Ship("Destroyer", 1));
+    gameBoard.ships.Submarine.hit();
+    gameBoard.ships.Destroyer.hit();
+
+    expect(gameBoard.allShipsSunk()).toBe(true);
   });
 });
 
@@ -30,4 +46,24 @@ describe("Ship", () => {
     expect(new Ship("Dummy", 2).hit()).toBe(1));
   test("Shows state of ship", () =>
     expect(new Ship("Dummy", 2).isSunk()).toBe(false));
+});
+
+describe("Player", () => {
+  test("Player makes move properly", () => {
+    const jon = new Player("Jon");
+    const enemyGameBoard = new Gameboard();
+
+    jon.makeMove(enemyGameBoard, [0, 0]);
+
+    expect(enemyGameBoard.board[0][0]).toBe("Missed");
+  });
+
+  test("Ai makes move Properly", () => {
+    const jon = new Player("Jon", true);
+    const enemyGameBoard = new Gameboard();
+    const length = jon.available.length;
+
+    jon.makeMove(enemyGameBoard);
+    expect(jon.available.length).toBe(length - 1);
+  });
 });
