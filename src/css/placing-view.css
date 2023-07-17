@@ -1,0 +1,58 @@
+.place-carrier-view {
+  background: var(--black);
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  color: var(--white);
+}
+
+.place-carrier-wrapper {
+  width: 90vw;
+  margin: 0 auto;
+  text-align: center;
+  background: var(--gray);
+  margin-top: 5em;
+  padding: 1em;
+  text-transform: uppercase;
+  border-radius: 5px;
+  margin-bottom: 2em;
+}
+
+.welcome-to-game {
+  font-size: 1rem;
+  color: var(--yellow);
+}
+
+.place-carrier {
+  margin-bottom: 0.5em;
+}
+
+.flip-btn {
+  color: var(--blue);
+  padding: 0.3em 0.7em;
+  transition:
+    background-color 200ms ease-in,
+    color 200ms ease-in;
+  width: max-content;
+  margin: 0 auto;
+  border-radius: 5px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.flip-btn:hover {
+  color: var(--white);
+  background: var(--blue);
+  cursor: pointer;
+}
+
+.placing-cell {
+  width: calc(calc(90vw - 25px) / 10);
+  height: calc(90vw / 10);
+  background: var(--white);
+  border: 1px solid var(--black);
+}
+
+.starting-board {
+  border: 1px solid var(--black);
+}
