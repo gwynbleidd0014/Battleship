@@ -1,0 +1,14 @@
+.game-view {
+  display: flex;
+  gap: 2em;
+  margin: 0 auto;
+  width: 85vw;
+  margin-top: 5em;
+}
+
+.game-view-cell {
+  width: calc(calc(40vw - 25px) / 10);
+  height: calc(40vw / 10);
+  background: var(--white);
+  border: 1px solid var(--black);
+}

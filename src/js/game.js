@@ -1,3 +1,5 @@
+import { checkIfSafe, randomPosition } from "./dom.js";
+
 class Ship {
   constructor(name, length) {
     this.name = name;
@@ -35,31 +37,52 @@ class Gameboard {
 
   placeShip(start, isHorisontal = true, ship) {
     let [rowCurrent, colCurrent] = start;
+    try {
+      if (isHorisontal) {
+        for (let i = 0; i < ship.length; i++) {
+          this.board[rowCurrent][colCurrent] = ship.name;
+          colCurrent++;
+        }
+      } else {
+        for (let i = 0; i < ship.length; i++) {
+          this.board[rowCurrent][colCurrent] = ship.name;
+          rowCurrent++;
+        }
+      }
 
-    if (isHorisontal) {
-      for (let i = 0; i < ship.length; i++) {
-        this.board[rowCurrent][colCurrent] = ship.name;
-        colCurrent++;
-      }
-    } else {
-      for (let i = 0; i < ship.length; i++) {
-        this.board[rowCurrent][colCurrent] = ship.name;
-        rowCurrent++;
-      }
+      this.ships[ship.name] = ship;
+
+      return this.board;
+    } catch (e) {
+      console.log(e);
+      console.log(start[0], ship.length, isHorisontal);
     }
+  }
 
-    this.ships[ship.name] = ship;
-
-    return this.board;
+  placeShipsRandomly(shipTypes) {
+    for (let [name, length] of shipTypes) {
+      const isXAxis = Math.floor(Math.random() * 2) + 1 === 1 ? true : false;
+      const ship = new Ship(name, length);
+      let cond = true;
+      let pos = null;
+      while (cond) {
+        pos = randomPosition();
+        cond = !checkIfSafe(pos, this.board, ship.length, isXAxis)[0];
+      }
+      this.placeShip(pos, isXAxis, ship);
+    }
   }
 
   receiveAttack(r, c) {
     if (!(r >= 0 && r < this.board.length && c >= 0 && c < this.board.length))
       return "No such position";
-    if (this.board[r][c] === "Free") this.board[r][c] = "Missed";
-    else {
+    if (this.board[r][c] === "Free") {
+      this.board[r][c] = "Missed";
+      return "Miss";
+    } else {
       const ship = this.ships[this.board[r][c]];
       ship.hit();
+      return "Hit";
     }
   }
 

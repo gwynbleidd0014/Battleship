@@ -1,5 +1,5 @@
 import "../css/style.css";
-import { drawBoard, prepeareShips } from "./dom";
+import { drowPlacingBoard, prepeareShips, drawGameViewBoards } from "./dom";
 
-drawBoard();
+drowPlacingBoard();
 prepeareShips();
