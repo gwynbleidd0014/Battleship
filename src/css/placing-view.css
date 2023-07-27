@@ -38,6 +38,7 @@
   border-radius: 5px;
   font-weight: 600;
   letter-spacing: 1px;
+  margin-bottom: 2em;
 }
 
 .flip-btn:hover {
@@ -46,13 +47,22 @@
   cursor: pointer;
 }
 
-.placing-cell {
-  width: calc(calc(90vw - 25px) / 10);
-  height: calc(90vw / 10);
-  background: var(--white);
-  border: 1px solid var(--black);
+.starting-board {
+  width: max-content;
+  margin: 0 auto;
+  margin-bottom: 2em;
 }
 
-.starting-board {
-  border: 1px solid var(--black);
+.placing-cell {
+  width: calc(min(85vh, 45vw) / 10);
+  height: calc(min(85vh, 45vw) / 10);
+  background: var(--white);
+}
+
+@media screen and (min-width: 768px) {
+  .placing-cell {
+    width: calc(min(45vh, 45vw) / 10);
+    height: calc(min(45vh, 45vw) / 10);
+    background: var(--white);
+  }
 }

@@ -7,6 +7,11 @@ const placeCarrierViewEl = document.querySelector(".place-carrier-view");
 const playerOneBoardEl = document.querySelector(".player1-board");
 const playerTwoBoardEl = document.querySelector(".player2-board");
 const gameViewEl = document.querySelector(".game-view");
+const flipper = document.querySelector(".flip-btn");
+
+const gameOverViewEl = document.querySelector(".game-over-view");
+const messageEl = document.querySelector(".message");
+const playAgainEl = document.querySelector(".play-again");
 
 let isXAxis = true;
 let placingFaze = true;
@@ -19,14 +24,21 @@ const shipTypes = [
   ["Destroyer", 2],
 ];
 
-const player1Board = new Gameboard();
-const player2Board = new Gameboard();
+let player1Board = new Gameboard();
+let player2Board = new Gameboard();
 
-const player1 = new Player("Jake");
+let player1 = new Player("Jake");
+let player2 = new Player("AI", true);
 
-function loadPlaceCarrierView() {
-  startingBoardEl;
-}
+playAgainEl.addEventListener("click", (e) => {
+  resetGame();
+
+  resetUi();
+});
+
+flipper.addEventListener("click", () => {
+  isXAxis = !isXAxis;
+});
 
 function drawBoard(el, additionalClassName) {
   for (let r = 0; r < 10; r++) {
@@ -52,22 +64,19 @@ function drawBoardWithShips(el, additionalClassName, board) {
 }
 
 function drowPlacingBoard() {
+  startingBoardEl.innerHTML = "";
   drawBoard(startingBoardEl, "placing-cell");
 }
 
 function drawGameViewBoards() {
+  playerOneBoardEl.innerHTML = "";
+  playerTwoBoardEl.innerHTML = "";
   drawBoardWithShips(playerOneBoardEl, "game-view-cell", player1Board.board);
-  // drawBoard(playerTwoBoardEl, "game-view-cell");
-  drawBoardWithShips(playerOneBoardEl, "game-view-cell", player2Board.board);
+  drawBoard(playerTwoBoardEl, "game-view-cell");
 }
 
 function prepeareShips() {
   const cells = document.querySelectorAll(".placing-cell");
-  const flipper = document.querySelector(".flip-btn");
-
-  flipper.addEventListener("click", () => {
-    isXAxis = !isXAxis;
-  });
 
   cells.forEach((cell, i) => {
     cell.addEventListener("mouseover", (e) => {
@@ -125,10 +134,12 @@ function registerShip(el, start, gameBoard, index, arr) {
 
   if (order === 5) {
     placingFaze = false;
-    drawGameView();
+    startGame();
+    return;
   }
 
   colorCells(el, numberOfCellsToColor, inBound, index, arr);
+  displayCurrentShip();
 }
 
 function checkIfSafe(pos, board, length, horizontal = isXAxis) {
@@ -174,6 +185,11 @@ function colorCells(el, numberOfCellsToColor, inBound, index, arr) {
   }
 }
 
+function startGame() {
+  drawGameView();
+  addEventListenersToGameViewBoards();
+}
+
 function drawGameView() {
   placeCarrierViewEl.classList.add("hidden");
   gameViewEl.classList.remove("hidden");
@@ -195,20 +211,56 @@ function addEventListenersToGameViewBoards() {
   const firstBoard = playerOneBoardEl.querySelectorAll(".cell");
   const secondBoard = playerTwoBoardEl.querySelectorAll(".cell");
 
-  // firstBoard.forEach((el) => {
-  //   el.addEventListener("click");
-  // });
-
   secondBoard.forEach((el) => {
     el.addEventListener("click", (e) => {
-      const result = makeMove(player2Board, parsePosition(e.target));
-      colorPos(result, e.target);
+      makeMove(player2Board, parsePosition(e.target), e.target);
+      makeAiMove(player1Board);
+      if (player2Board.allShipsSunk()) gameOver(player1.name);
+      if (player1Board.allShipsSunk()) gameOver(player2.name);
     });
   });
 }
 
-function makeMove(gameBoard, pos) {
-  return gameBoard.recieveHit(pos[0], pos[1]);
+function makeMove(gameBoard, pos, el) {
+  const result = player1.makeMove(gameBoard, pos);
+  colorPos(result[0], el);
+}
+
+function makeAiMove(gameBoard) {
+  const result = player2.makeMove(gameBoard);
+  const el = playerOneBoardEl.querySelector(
+    `[data-pos="${result[1]},${result[2]}"]`
+  );
+
+  colorPos(result[0], el);
+}
+
+function gameOver(winner) {
+  if (winner === player1.name) {
+    messageEl.textContent = "You won";
+  } else {
+    messageEl.textContent = "You lose";
+  }
+  gameOverViewEl.classList.remove("hidden");
+}
+
+function resetGame() {
+  player1Board = new Gameboard();
+  player2Board = new Gameboard();
+  player1 = new Player("Jake");
+  player2 = new Player("AI", true);
+  isXAxis = true;
+  placingFaze = true;
+
+  order = 0;
+}
+
+function resetUi() {
+  drowPlacingBoard();
+  prepeareShips();
+  placeCarrierViewEl.classList.remove("hidden");
+  gameViewEl.classList.add("hidden");
+  gameOverViewEl.classList.add("hidden");
 }
 
 function colorPos(type, el) {

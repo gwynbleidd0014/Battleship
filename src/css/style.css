@@ -1,8 +1,10 @@
 @import "start-view.css";
-@import "utility.css";
+
 @import "placing-view";
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Rubik+Mono+One&display=swap");
 @import "game-view";
+@import "game-over";
+@import "utility.css";
 :root {
   --black: #000;
   --yellow: #faec00;
@@ -27,5 +29,6 @@ html {
 
 .board {
   display: grid;
+  gap: 1px;
   grid-template-columns: repeat(10, 1fr);
 }

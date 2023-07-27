@@ -1,14 +1,39 @@
 .game-view {
   display: flex;
   gap: 2em;
+  flex-direction: column;
   margin: 0 auto;
-  width: 85vw;
+  width: 100vw;
+  min-height: 100vh;
   margin-top: 5em;
+  background-color: black;
+  margin-top: 0;
+  padding-top: 2em;
+
+  justify-content: center;
 }
 
 .game-view-cell {
-  width: calc(calc(40vw - 25px) / 10);
-  height: calc(40vw / 10);
+  width: calc(min(85vh, 45vw) / 10);
+  height: calc(min(85vh, 45vw) / 10);
   background: var(--white);
-  border: 1px solid var(--black);
+}
+
+.game-view-board {
+  width: max-content;
+  margin: 0 auto;
+  height: max-content;
+}
+
+@media screen and (min-width: 768px) {
+  .game-view-cell {
+    width: calc(min(45vh, 45vw) / 10);
+    height: calc(min(45vh, 45vw) / 10);
+    background: var(--white);
+  }
+
+  .game-view {
+    flex-direction: row;
+    align-items: center;
+  }
 }

@@ -109,15 +109,19 @@ class Player {
   }
 
   makeMove(enemyGameBoard, pos) {
-    if (!this.ai) enemyGameBoard.receiveAttack(pos[0], pos[1]);
+    let result = [];
+    if (!this.ai) result[0] = enemyGameBoard.receiveAttack(pos[0], pos[1]);
     else {
       const index = Math.floor(Math.random() * this.available.length);
-      enemyGameBoard.receiveAttack(
+      result[0] = enemyGameBoard.receiveAttack(
         this.available[index][0],
         this.available[index][1]
       );
+      result[1] = this.available[index][0];
+      result[2] = this.available[index][1];
       this.available.splice(index, 1);
     }
+    return result;
   }
 }
 
